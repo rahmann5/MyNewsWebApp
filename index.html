@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>My News App</title>
+	<!-- OwlCarousel -->
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.theme.default.min.css">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css">
+  	<!-- Font Awesome -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+	<!-- Bootstrap core CSS -->
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css" rel="stylesheet">
+	<!-- Material Design Bootstrap -->
+	<link href="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.5.16/css/mdb.min.css" rel="stylesheet">
+
+	<style type="text/css">
+		.card-img-top{
+			height: 350px;
+		}
+
+		.search::-webkit-input-placeholder {
+			color: white !important;
+		}
+		 
+		.search:-moz-placeholder { /* Firefox 18- */
+			color: white !important;  
+		}
+		 
+		.search::-moz-placeholder {  /* Firefox 19+ */
+			color: white !important;  
+		}
+		 
+		.search::-ms-input-placeholder {  
+			color: white !important;  
+		}
+
+		.source-news{
+			max-height: 120px;
+			max-width: 120px;
+		}
+
+		.source-btns, .source-container{
+			height: 500px;
+			overflow: auto;
+		}
+
+		.active{
+			color: white!important;
+		}
+
+		.search-btn{
+			cursor: pointer;
+		}
+	</style>
+</head>
+<body>
+	<nav class="navbar fixed-top navbar-expand-lg navbar-dark scrolling-navbar bg-success">
+        <a class="navbar-brand" href="#">MyNewsWebApp</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a class="nav-link waves-effect waves-light" href="#top">Top <span class="sr-only">(current)</span></a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link waves-effect waves-light" href="#sources">Sources</a>
+                </li>
+                <li class="nav-item dropdown">
+                    <a class="nav-link dropdown-toggle waves-effect waves-light" id="navbarDropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Country 
+                    </a>
+                    <div class="dropdown-menu dropdown-primary countries-drop" aria-labelledby="navbarDropdownMenuLink">
+                        <span class="dropdown-item waves-effect waves-light active">US: United States</span>
+                        <span class="dropdown-item waves-effect waves-light">GB: Great Britain</span>
+                    </div>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link waves-effect waves-light" href="#about">About</a>
+                </li>
+            </ul>
+            <div class="input-group md-form form-sm form-2 pl-0 w-50 m-0 p-0">
+			  <input class="form-control my-0 py-1 red-border search text-white" type="text" placeholder="Search" aria-label="Search">
+			  <div class="input-group-append">
+			    <span class="input-group-text transparent lighten-3 search-btn" id="basic-text1"><i class="fa fa-search text-grey" aria-hidden="true"></i></span>
+			  </div>
+			</div>
+        </div>
+    </nav>
+
+    <div id = "top" class="row py-4 mt-5 mx-0">
+		<div class="owl-carousel owl-theme col-md-12 px-0">
+        </div>
+	</div>
+
+	<div id = "sources" class="row mx-0 mt-5 pt-5">
+		<h1 class="h1-responsive d-block col-md-12 font-weight-bold text-center">Sources</h1>
+		<div class="col-md-2 source-btns">
+		</div>
+		<div class="col-md-10 source-container">
+		</div>
+	</div>
+	<div id = "search-results" class="row py-4 mt-5 mx-0 d-none">
+    	<h1 class="h1-responsive d-block col-md-12 font-weight-bold text-center mt-5">Results</h1>
+    	<div class="col-md-12 result-container px-3 mx-auto row">
+			
+    	</div>
+    </div>
+	<div id = "about" class="row mx-0 mt-5 pt-5">
+		<h1 class="h1-responsive d-block col-md-12 font-weight-bold text-center mt-5">About</h1>
+		<div class="col-md-6 text-center mx-auto">
+			<p class="text-center font-weight-bold h5-responsoive">All requests handled by <a href="https://newsapi.org/" target="_blank">News API</a></p>
+		</div>	
+	</div>
+
+    <!-- JQuery -->
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+	<!-- OwlCarousel -->
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/owl.carousel.min.js"></script>
+	<!-- Bootstrap tooltips -->
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.4/umd/popper.min.js"></script>
+	<!-- Bootstrap core JavaScript -->
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/js/bootstrap.min.js"></script>
+	<!-- MDB core JavaScript -->
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/mdbootstrap/4.5.16/js/mdb.min.js"></script>
+
+<script type="text/javascript">
+	
+$(document).ready(function() {
+	/*Call on load*/
+	//Top Headlines
+	makeAjaxRequest("top-headlines","https://newsapi.org/v2/top-headlines", {"country":"us", "apiKey":"Your_API_KEY"});
+
+	//Sources
+	makeAjaxRequest("sources","https://newsapi.org/v2/sources", {"apiKey":"Your_API_KEY"});
+
+	/*Events*/
+	var currentCode = "US";
+	$('.countries-drop').on('click', 'span',function(){
+		var code = $(this).text().split(":")[0];
+		if(code != currentCode){
+			currentCode = code;
+			$(this).addClass("active");
+			$(this).siblings().removeClass("active");
+			$('#top').html("");
+			$('#top').append("<div class='owl-carousel owl-theme col-md-12 px-0'></div");
+			makeAjaxRequest("top-headlines","https://newsapi.org/v2/top-headlines", {"country":code,"apiKey":"Your_API_KEY"});
+		}
+	});
+
+	$('.search-btn').on('click', function(){
+		var q = $(".search").val();
+		$(".search").val("");
+		$(".search").text("");
+		$('#search-results').removeClass('d-none');
+		$('.result-container').html("");
+		 $([document.documentElement, document.body]).animate({
+		        scrollTop: $("#search-results").offset().top
+		    }, 2000);
+		makeAjaxRequest("search","https://newsapi.org/v2/everything", {"q":q,"apiKey":"Your_API_KEY"});
+	});
+
+	$('.source-btns').on('click', '.btn-source', function(){
+		$('.source-container').html("");
+		$(this).removeClass('btn-elegant')
+		$(this).addClass("default-color");
+		$(this).siblings().removeClass("default-color");
+		$(this).siblings().addClass("btn-elegant");
+		var value = $(this).next('input').val();
+		makeAjaxRequest("source","https://newsapi.org/v2/top-headlines", {"sources":value,"apiKey":"Your_API_KEY"});
+	});
+
+	/*AJAX Request*/
+	function makeAjaxRequest(type, url, data){
+	   $.ajax({
+	      method: "GET",
+	      url: url,
+	      data: data,
+	      dataType:'json',
+	      success: function( response ) { 
+	       if(type == "top-headlines")
+	       		processTopHeadlines(response);
+	       	else if(type == "sources")
+	       		processSources(response);
+	       	else if(type == "source")
+	       		processSource(response);
+	       	else if(type == "search")
+	       		processSearch(response);
+	      },  
+	      fail: function() {
+	        alert('fail');
+	      }   
+	    });
+	}
+
+	/*Output processers*/
+	function processTopHeadlines(response){
+		 var item = "";
+        for(var i = 0; i < response.articles.length; i++){
+        	var imgUrl = (response.articles[i].urlToImage == null) ? "http://buy-sildenafil-online.net/upload/noimage.jpg" : response.articles[i].urlToImage;
+        	item = " <div class='item'><div class='card z-depth-0'><img class='card-img-top' src='"+imgUrl+"'/><div class='card-body'><h4 class='card-title black-text'><a>"+response.articles[i].title+"</a></h4><p class='card-text'>"+response.articles[i].description+"</p><a href='"+response.articles[i].url+"' class='btn btn-primary'>Read More</a></div></div</div"
+        	$('.owl-carousel').append(item);
+        }
+
+        setupCarousel();
+	}
+
+	function processSources(response){
+		
+		var item = "";
+		 for(var i = 0; i < response.sources.length; i++){
+		 	item = "<button type='button' class='btn btn-elegant d-block w-100 mt-0 btn-source'>"+response.sources[i].name+"</button><input type = 'hidden' value = '"+response.sources[i].id+"'>";
+		 	$('.source-btns').append(item);
+		 }
+	}
+
+	function processSource(response){
+		var item = "";
+        for(var i = 0; i < response.articles.length; i++){
+        	var imgUrl = (response.articles[i].urlToImage == null) ? "http://buy-sildenafil-online.net/upload/noimage.jpg" : response.articles[i].urlToImage;
+        	item = "<div class='media mb-2'><img class='d-flex mr-3 source-news' src='"+imgUrl+"' alt='Generic placeholder image'/><div class='media-body'><h5 class='my-0 font-weight-bold'>"+response.articles[i].title+"</h5><span>"+response.articles[i].description+"</span><a href='"+response.articles[i].url+"' target='_blank'>Read More...</a></div></div>";
+        	$('.source-container').append(item);
+        }
+	}
+
+	function processSearch(response){
+		var item = "";
+		var loopAmount = (response.articles.length > 16)? 16:response.articles.length;
+        for(var i = 0; i < loopAmount; i++){
+        	var imgUrl = (response.articles[i].urlToImage == null) ? "http://buy-sildenafil-online.net/upload/noimage.jpg" : response.articles[i].urlToImage;
+        	item = "<div class='card card-image col-md-3 p-0' style='background-image: url("+imgUrl+");'><div class='text-white h-100 text-center d-flex align-items-center rgba-black-strong py-5 px-4'><div class='w-100'> <h5 class='orange-text'><i class='fas fa-newspaper'></i> "+response.articles[i].source.name+"</h5><h3 class='card-title pt-2'><strong>"+response.articles[i].title+"</strong></h3><a class='btn btn-orange' href='"+response.articles[i].url+"'><i class='fa fa-clone left'></i> View project</a></div></div></div>";
+        	$('.result-container').append(item);
+        }
+	}
+
+	/*Support functions*/
+	function setupCarousel(){
+		$('.owl-carousel').owlCarousel({
+	    loop: true,
+	    margin: 5,
+	    responsiveClass: true,
+	    responsive: {
+	      0: {
+	        items: 1,
+	        nav: true
+	      },
+	      600: {
+	        items: 2,
+	        nav: false
+	      },
+	      1000: {
+	        items: 3,
+	        nav: true,
+	        loop: true,
+	        margin: 5
+	      }
+	    }
+	  })
+	}
+
+	// Select all links with hashes
+	$('a[href*="#"]')
+	  // Remove links that don't actually link to anything
+	  .not('[href="#"]')
+	  .not('[href="#0"]')
+	  .click(function(event) {
+	    // On-page links
+	    if (
+	      location.pathname.replace(/^\//, '') == this.pathname.replace(/^\//, '') 
+	      && 
+	      location.hostname == this.hostname
+	    ) {
+	      // Figure out element to scroll to
+	      var target = $(this.hash);
+	      target = target.length ? target : $('[name=' + this.hash.slice(1) + ']');
+	      // Does a scroll target exist?
+	      if (target.length) {
+	        // Only prevent default if animation is actually gonna happen
+	        event.preventDefault();
+	        $('html, body').animate({
+	          scrollTop: target.offset().top
+	        }, 1000, function() {
+	          // Callback after animation
+	          // Must change focus!
+	          var $target = $(target);
+	          $target.focus();
+	          if ($target.is(":focus")) { // Checking if the target was focused
+	            return false;
+	          } else {
+	            $target.attr('tabindex','-1'); // Adding tabindex for elements not focusable
+	            $target.focus(); // Set focus again
+	          };
+	        });
+	      }
+	    }
+	  });
+});
+      
+</script>
+
+</body>
+</html>
